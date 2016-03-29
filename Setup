@@ -1,0 +1,62 @@
+1. 安装依赖软件：
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install -y curl git graphicsmagick python-dev python-pip python-numpy python-nose python-scipy python-pandas \
+    python-protobuf wget zip cmake
+    
+2. 安装opencv：
+wget https://github.com/Itseez/opencv/archive/2.4.11.zip
+unzip 2.4.11.zip
+mv opencv-2.4.11 opencv
+cd opencv
+mkdir release
+cd release
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
+make
+sudo make install
+
+3. 安装boost
+wget https://sourceforge.net/projects/boost/files/boost/1.60.0/boost_1_60_0.tar.bz2
+tar xf boost_1_60_0.tar.bz2
+mv boost_1_60_0 boost
+cd boost
+./bootstrap.sh
+./b2
+sudo ./b2 install
+
+4. 安装dlib
+wget https://github.com/davisking/dlib/releases/download/v18.16/dlib-18.16.tar.bz2
+tar xf dlib-18.16.tar.bz2
+mv dlib-18.16 dlib
+cd dlib/python_examples
+mkdir build
+cd build
+cmake ../../tools/python -DUSE_AVX_INSTRUCTIONS=ON
+cmake --build . --config Release
+sudo cp dlib.so /usr/local/lib/python2.7/dist-packages
+
+5. 安装torch
+git clone https://github.com/torch/distro.git ~/torch --recursive
+cd torch
+./install-deps
+./install.sh << YES
+yes
+YES
+source ~/.bashrc
+luarocks install dpnn
+luarocks install nn
+luarocks install optim
+luarocks install csvigo
+
+6. 安装openface
+git clone https://github.com/cmusatyalab/openface --recursive
+cd openface
+./models/get-models.sh
+sudo pip install -r requirements.txt
+sudo python setup.py install
+sudo pip install -r demos/web/requirements.txt
+
+7. 安装zeromq
+sudo pip install pyzmq
+
+8. 安装bolt
