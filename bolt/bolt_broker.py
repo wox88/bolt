@@ -12,9 +12,11 @@ import sys
 import time
 import zmq
 import binascii
+import SocketServer
 
 import MDP
 from zhelpers import dump
+from bolt_discovery import UDPReceivedHandler
 
 class Service(object):
 	"""
@@ -81,6 +83,7 @@ class MajordomoBroker(object):
 		self.poller = zmq.Poller()
 		self.poller.register(self.socket, zmq.POLLIN)
 		logging.basicConfig(format="%(asctime)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S",level=logging.INFO)
+		self.bind("tcp://*:5555")
 
 	def serve_forever(self):
 		"""
@@ -368,10 +371,11 @@ class MajordomoBroker(object):
 
 def run():
     """create and start new broker"""
-    verbose = '-v' in sys.argv
-    broker = MajordomoBroker(verbose)
-    broker.bind("tcp://*:5555")
+    broker = MajordomoBroker()
     broker.serve_forever()
 
 if __name__ == '__main__':
     run()
+
+
+

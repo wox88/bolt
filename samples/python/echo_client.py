@@ -10,11 +10,11 @@ from client_api import MajordomoClient
 
 class EchoClient(MajordomoClient):
 
-	def __init__(self, broker="tcp://localhost:5555",verbose=False):
-		super(EchoClient,self).__init__(broker,verbose)
+	def __init__(self,verbose=False):
+		super(EchoClient,self).__init__(verbose)
 
 	def run_task(self):
-		requests = 100000
+		requests = 10
 		count = 0
     
 		for i in xrange(requests):
@@ -32,7 +32,7 @@ class EchoClient(MajordomoClient):
 				print "send interrupted, aborting"
 				return
 
-		print "%i requests/replies processed" % count+1
+		print "%i requests/replies processed" % (count+1)
 
 
 def test():

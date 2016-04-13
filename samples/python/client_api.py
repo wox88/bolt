@@ -10,6 +10,8 @@
 
 import logging
 import zmq
+import socket
+import sys
 
 import MDP
 from zhelpers import dump
@@ -26,15 +28,38 @@ class MajordomoClient(object):
 	timeout = 2500
 	verbose = False
 
-	def __init__(self, broker, verbose=False):
-		self.broker = broker
+	def __init__(self, verbose=False):
 		self.verbose = verbose
 		self.ctx = zmq.Context()
 		self.poller = zmq.Poller()
 		logging.basicConfig(format="%(asctime)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S",
                 level=logging.INFO)
+		self.get_broker()
 		self.reconnect_to_broker()
+	
+	def udp_send(self,data,ip,port):
+		try:
+			sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+			sock.sendto(data + "\n", (ip, port))
 
+			sock.settimeout(1.0)
+			return sock.recv(1024)
+		except:
+			return ""
+
+	def get_broker(self):
+		try:
+			sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+			sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
+			sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST,1)
+			sock.sendto("BDP01REQ", ("255.255.255.255",5555))
+
+			sock.settimeout(1.0)
+			data,address = sock.recvfrom(1024)
+			if data == "BDP01REP":
+				self.broker = "tcp://"+ address[0] + ":5555"
+		except:
+			self.broker = None
 
 	def reconnect_to_broker(self):
 		"""
