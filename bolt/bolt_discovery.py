@@ -8,7 +8,10 @@ class UDPReceivedHandler(SocketServer.BaseRequestHandler):
 		socket = self.request[1]
 
 		if data == "BDP01REQ":
+			print self.client_address
 			socket.sendto("BDP01REP", self.client_address)
+		else:
+			print data
         
 if __name__ == "__main__":
 	try:

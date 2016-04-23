@@ -24,7 +24,12 @@ class EchoService(MajordomoWorker):
 		#msg = "%s returned." % request.pop(0)
 		msg = request.pop(0)
 		
-		return [msg]
+		#print msg
+		f = open('test2.jpg','w')
+		f.write(msg)
+		f.close
+
+		return ["test"]
 	
 
 
